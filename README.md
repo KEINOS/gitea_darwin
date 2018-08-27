@@ -14,7 +14,7 @@ To install [Gitea](https://gitea.io/) on your Mac, just run this command below u
 bash <(curl -s https://keinos.github.io/gitea_darwin/install.sh)
 ```
 
-- **NOTE:** This installer only works and is for Mac.
+- **NOTE:** This installer only works on and is for Mac.
 - [See the source of the installer](https://github.com/KEINOS/gitea_darwin/blob/master/install.sh)
 
 ## Tested environment
