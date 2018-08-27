@@ -28,11 +28,13 @@ bash <(curl -s https://keinos.github.io/gitea_darwin/install.sh)
 
 ## What this script does?
 
-1. Downloads archive file of Gitea binary for Mac(darwin, arm64) from the [latest releases pages](https://github.com/go-gitea/gitea/releases)
+It eases your usual process to install Gitea.
+
+1. It downloads the archive Gitea binary file the checksums for Mac(darwin, arm64) from the [latest releases pages](https://github.com/go-gitea/gitea/releases)
 2. Compares the checksum of the archive.
 3. Extracts the archive.
 4. Changes mode as executable.
-5. Checks the binary version.
+5. Checks and displays the binary version.
 6. Search un-used ports for buil-in ssh and web server of Gitea.
 7. Sets the SSH and HTTP ports found as default.
 8. Runs the Gitea and launches the default browser to setup.
