@@ -23,7 +23,7 @@ curl -s https://keinos.github.io/gitea_darwin/install.sh | bash
     - MacBook Pro (Retina, 13-inch, Early 2015)
     - 2.7 GHz Intel Core i5
 
-- For other confirmed environments see issue #1
+- For other confirmed environments see [issue #1](https://github.com/KEINOS/gitea_darwin/issues/1)
 
 
 ## What this script does?
