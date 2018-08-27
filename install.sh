@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+## Add user
+## - REF: MacでCLIから新しくuserとgroupを作成 @ Qiita
+## - URL: https://qiita.com/okapon_pon/items/e95b2fba379fb0a00278
+## Run server
+## - REF: Gitea - バイナリ一個で動作する簡単設置タイプのGitサーバー
+## - URL: https://www.softantenna.com/wp/review/gitea/
 
 # Basic Info settings
 # ------------------------------------------------------------------------------
@@ -8,17 +14,19 @@
 URL_API='https://api.github.com/repos/go-gitea/gitea/releases/latest'
 
 ## Basic user settings
-NAME_BIN='gitea'     # Name of binary at last
-NAME_HOST=`hostname` # Local host name
-NAME_OS='darwin'     # macOS is darwin. See URL_API above for other OS
-NAME_CPU='amd64'     # 64bit Mac
-NAME_EXT='.xz'       # Files related to XZ. Such as .xz, .xz.asc, .xz.sha256
+NAME_BIN='gitea'       # Name of binary at last
+NAME_HOST=`hostname`   # Local host name
+NAME_OS='darwin'       # macOS is darwin. See URL_API above for other OS
+NAME_CPU='amd64'       # 64bit Mac
+NAME_EXT='.xz'         # Files related to XZ. Such as .xz, .xz.asc, .xz.sha256
+TYPE_DB='sqlite3'      # Default DB type.
+PORT_HTTP_DEFAULT=3000 # Default port number for http access
+PORT_SSH_DEFULT=22     # Default port number for ssh access
 
 ## Basic application settings (Do NOT change this)
 PATH_DIR_APPINI='custom/conf'
 NAME_APPINI='app.ini'
 PATH_FILE_APPINI="${PATH_DIR_APPINI}/${NAME_APPINI}"
-
 
 # Basic functions
 # ------------------------------------------------------------------------------
@@ -79,18 +87,17 @@ function getPortRandom() {
 ## Get JSON and fetch *amd64 archive and the hash digest list from it
 echo -n '- Fetching latest release: '
 #CMD=`curl -s "${URL_API}" | jq -r '.assets[] | .browser_download_url'| grep ${NAME_OS} | grep ${NAME_CPU}.xz | sed -e 's/http/ -O http/'`
-CMD=`curl -s "${URL_API}" | grep 'browser_download_url' | grep ${NAME_OS} | grep ${NAME_CPU}.xz | sed -E 's/^.*"([^"]+)".*/\1/' | sed 's/http/ -O http/'`
-
+RELEASE=`curl -s "${URL_API}"`
 if [ $? -gt 0 ]; then
     echo '* Error while fetching releases.'
     exit $LINENO
 fi
+URLS=`echo $RELEASE | grep 'browser_download_url' | grep ${NAME_OS} | grep ${NAME_CPU}.xz | sed -E 's/^.*"([^"]+)".*/\1/' | sed 's/http/ -O http/'`
 echo 'OK'
-
 
 ## Download files
 echo '- Downloading files: '
-curl -L ${CMD}
+curl -L ${URLS}
 if [ $? -gt 0 ]; then
     echo '* Error while downloading files.'
     exit $LINENO
@@ -189,7 +196,7 @@ echo 'OK'
 
 ## Fetch unused random ports for HTTP
 echo -n '- Fetching unused ports for builtin Webserver: '
-port=8080 # Preferred port number
+port=$PORT_HTTP_DEFAULT # Preferred port number
 port_http=`getPortRandom`
 if [ $? -gt 0 ]; then
     echo '* Error while fetching random ports.'
@@ -199,7 +206,7 @@ echo "OK (PORT: ${port_http})"
 
 ## Fetch unused random ports for SSH
 echo -n '- Fetching unused ports for builtin SSH: '
-port=22 # Preferred port number
+port=$PORT_SSH_DEFAULT # Preferred port number
 port_ssh=`getPortRandom`
 if [ $? -gt 0 ]; then
     echo '* Error while fetching random ports.'
@@ -207,12 +214,16 @@ if [ $? -gt 0 ]; then
 fi
 echo "OK (PORT: ${port_ssh})"
 
-## Creating server launcher
+## Creating server configuration file as default
+## For configuration detail, see:
+## https://docs.gitea.io/en-us/config-cheat-sheet/
 echo -n '- Creating application ini file: '
 cat << _EOF_ > ${PATH_FILE_APPINI}
 [server]
 HTTP_PORT = ${port_http}
 SSH_PORT = ${port_ssh}
+[database]
+DB_TYPE = ${TYPE_DB}
 _EOF_
 
 if [ $? -gt 0 ]; then
@@ -248,25 +259,5 @@ else
 fi
 
 exit 0
-
-# リポジトリのルートパス
-# /Volumes/Macintosh_SD/Users/admin/gitea-repositories
-#
-# Git LFS Root Path
-# /Volumes/Macintosh_SD/Users/admin/test_bash/Gitea/data/lfs
-
-
-## Add user
-## - REF: MacでCLIから新しくuserとgroupを作成 @ Qiita
-## - URL: https://qiita.com/okapon_pon/items/e95b2fba379fb0a00278
-## Run server
-## - REF: Gitea - バイナリ一個で動作する簡単設置タイプのGitサーバー
-## - URL: https://www.softantenna.com/wp/review/gitea/
-
-exit 0
-
-# 実行
-# su - mastodon -c "/bin/bash ${SETUP}"
-
 
 
