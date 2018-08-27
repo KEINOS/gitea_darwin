@@ -11,7 +11,7 @@ Gitea is a simple and single application that allows you to self-host a git serv
 To install [Gitea](https://gitea.io/) on your Mac, just run this command below under preferred directory to install.
 
 ```bash
-curl -s https://keinos.github.io/gitea_darwin/install.sh | bash
+bash <(curl -s https://keinos.github.io/gitea_darwin/install.sh)
 ```
 
 - **NOTE:** This installer only works and is for Mac.
