@@ -208,7 +208,9 @@ if [ $? -gt 0 ]; then
 fi
 echo "OK (PORT: ${port_ssh})"
 
-## Creating server launcher
+## Creating configuration file as default
+## See the URL below for details:
+## https://docs.gitea.io/en-us/config-cheat-sheet/
 echo -n '- Creating application ini file: '
 cat << _EOF_ > ${PATH_FILE_APPINI}
 [server]
@@ -229,7 +231,7 @@ echo 'OK'
 
 echo -e "\n* DONE. ${NAME_BIN} installed successfuly.\n"
 
-# Boot server and setup
+# Start server and launch browser to setup
 # ------------------------------------------------------------------------------
 
 echo -n "Would you like to launch the browser to setup ${NAME_BIN} now? (y/n):"
@@ -254,25 +256,4 @@ else
 fi
 
 exit 0
-
-# リポジトリのルートパス
-# /Volumes/Macintosh_SD/Users/admin/gitea-repositories
-#
-# Git LFS Root Path
-# /Volumes/Macintosh_SD/Users/admin/test_bash/Gitea/data/lfs
-
-
-## Add user
-## - REF: MacでCLIから新しくuserとgroupを作成 @ Qiita
-## - URL: https://qiita.com/okapon_pon/items/e95b2fba379fb0a00278
-## Run server
-## - REF: Gitea - バイナリ一個で動作する簡単設置タイプのGitサーバー
-## - URL: https://www.softantenna.com/wp/review/gitea/
-
-exit 0
-
-# 実行
-# su - mastodon -c "/bin/bash ${SETUP}"
-
-
 
