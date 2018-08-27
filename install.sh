@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+## Get error on pipe fail too
+set -e -o pipefail
 
 # Basic Info settings
 # ------------------------------------------------------------------------------
@@ -79,8 +81,7 @@ function getPortRandom() {
 ## Get JSON and fetch *amd64 archive and the hash digest list from it
 echo -n '- Fetching latest release: '
 #CMD=`curl -s "${URL_API}" | jq -r '.assets[] | .browser_download_url'| grep ${NAME_OS} | grep ${NAME_CPU}.xz | sed -e 's/http/ -O http/'`
-CMD=`curl -s "${URL_API}" | grep 'browser_download_url' | grep ${NAME_OS} | grep ${NAME_CPU}.xz | sed -E 's/^.*"([^"]+)".*/\1/' | sed 's/http/ -O http/'`
-
+URLS=`curl -s "${URL_API}" | grep 'browser_download_url' | grep ${NAME_OS} | grep ${NAME_CPU}.xz | sed -E 's/^.*"([^"]+)".*/\1/' | sed 's/http/ -O http/'`
 if [ $? -gt 0 ]; then
     echo '* Error while fetching releases.'
     exit $LINENO
@@ -90,7 +91,7 @@ echo 'OK'
 
 ## Download files
 echo '- Downloading files: '
-curl -L ${CMD}
+curl -L ${URLS}
 if [ $? -gt 0 ]; then
     echo '* Error while downloading files.'
     exit $LINENO
