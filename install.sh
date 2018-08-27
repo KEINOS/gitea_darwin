@@ -214,6 +214,11 @@ cat << _EOF_ > ${PATH_FILE_APPINI}
 [server]
 HTTP_PORT = ${port_http}
 SSH_PORT = ${port_ssh}
+ROOT_URL = http://${NAME_HOST}:${port_http}/
+START_SSH_SERVER = true
+
+[database]
+DB_TYPE   = sqlite3
 _EOF_
 
 if [ $? -gt 0 ]; then
