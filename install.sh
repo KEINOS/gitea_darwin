@@ -206,7 +206,7 @@ if [ $? -gt 0 ]; then
 fi
 echo "OK (PORT: ${port_ssh})"
 
-## Creating server louncher
+## Creating server launcher
 echo -n '- Creating application ini file: '
 cat << _EOF_ > ${PATH_FILE_APPINI}
 [server]
@@ -225,7 +225,7 @@ echo -e "\n* DONE. ${NAME_BIN} installed successfuly.\n"
 # Boot server and setup
 # ------------------------------------------------------------------------------
 
-echo -n "Would you like to lounch the browser to setup ${NAME_BIN} now? (y/n):"
+echo -n "Would you like to launch the browser to setup ${NAME_BIN} now? (y/n):"
 
 read input
 
