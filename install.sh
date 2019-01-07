@@ -27,9 +27,13 @@ PATH_FILE_APPINI="${PATH_DIR_APPINI}/${NAME_APPINI}"
 
 function getPortUsed() {
     # この取得処理が一番重いので変数に入れて使い回すために用意
-    echo `lsof -i -P | grep -i "tcp" | sed 's/\[.*\]/IP/' \
-                   | sed 's/:/ /' | sed 's/->/ /'| awk -F' ' '{print $10}' \
-                   | awk '!a[$0]++'`
+    echo `lsof -i -P \
+            | grep -i "tcp" \
+            | sed 's/\[.*\]/IP/' \
+            | sed 's/:/ /' \
+            | sed 's/->/ /' \
+            | awk -F' ' '{print $10}' \
+            | awk '!a[$0]++'`
 }
 
 function getPortRandom() {
@@ -101,8 +105,11 @@ fi
 
 ## Get JSON and fetch *amd64 archive and the hash digest list from it
 echo -n '- Fetching latest release: '
-#CMD=`curl -s "${URL_API}" | jq -r '.assets[] | .browser_download_url'| grep ${NAME_OS} | grep ${NAME_CPU}.xz | sed -e 's/http/ -O http/'`
-URLS=`curl -s "${URL_API}" | grep 'browser_download_url' | grep ${NAME_OS} | grep ${NAME_CPU}.xz | sed -E 's/^.*"([^"]+)".*/\1/' | sed 's/http/ -O http/'`
+URLS=`curl -s "${URL_API}" \
+    | grep 'browser_download_url' \
+    | grep ${NAME_OS} | grep ${NAME_CPU}.xz \
+    | sed -E 's/^.*"([^"]+)".*/\1/' \
+    | sed 's/http/ -O http/'`
 if [ $? -gt 0 ]; then
     echo '* Error while fetching releases.'
     exit $LINENO
