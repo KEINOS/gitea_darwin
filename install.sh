@@ -75,8 +75,29 @@ function getPortRandom() {
     echo $port
 }
 
+function isBinAlreadyExists() {
+    ./$NAME_BIN --version > /dev/null 2>&1
+    echo $?
+}
+
 # Main
 # ------------------------------------------------------------------------------
+
+## Checking existing binay 
+echo -n '- Checking existing binary: '
+IS_UPDATE='no'
+if [ `isBinAlreadyExists` -eq 0 ] ; then
+    IS_UPDATE='yes'
+fi
+if [ $IS_UPDATE = 'yes' ] ; then
+    echo 'binary found ... updating'
+    echo -n -e "- Current version: \n\t"
+    ./$NAME_BIN --version
+    mv ./$NAME_BIN ./$NAME_BIN.old
+else
+    echo 'no binary found ... installing newly'
+fi
+
 
 ## Get JSON and fetch *amd64 archive and the hash digest list from it
 echo -n '- Fetching latest release: '
@@ -127,14 +148,16 @@ if [ $? -gt 0 ]; then
 fi
 echo 'OK'
 
-## Renameing binary file
-echo -n '- Renameing binary file: '
+
+## Renaming binary file
+echo -n '- Renaming binary file: '
 mv *-${NAME_CPU} ${NAME_BIN}
 if [ $? -gt 0 ]; then
-    echo '* Error while renameing binary.'
+    echo '* Error while renaming binary.'
     exit $LINENO
 fi
 echo 'OK'
+
 
 ## Changing file mode of the binary
 echo -n '- Changing mode of the binary as executable: '
@@ -145,6 +168,7 @@ if [ $? -gt 0 ]; then
 fi
 echo 'OK'
 
+
 ## Display installed path
 echo -n -e "- Installed path: \n\t"
 pwd
@@ -152,6 +176,7 @@ if [ $? -gt 0 ]; then
     echo '* Error while showing path.'
     exit $LINENO
 fi
+
 
 ## Display version info of the binary
 echo -n -e "- Installed version: \n\t"
@@ -161,11 +186,20 @@ if [ $? -gt 0 ]; then
     exit $LINENO
 fi
 
+
+## Exit if it's an update
+if [ $IS_UPDATE = 'yes' ] ; then
+    echo 'Updating finished.'
+    exit 0
+fi
+
+
 ## Done message if not Mac
 if [ "$(uname)" != 'Darwin' ]; then
     echo "* ${NAME_BIN} installed successfuly."
     exit 0
 fi
+
 
 # custom/conf/app.ini
 # ------------------------------------------------------------------------------
